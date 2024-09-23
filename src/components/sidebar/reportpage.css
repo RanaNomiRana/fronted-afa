@@ -1,0 +1,158 @@
+/* Overall page styling */
+.report-page {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  
+  .report-page h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #007bff; /* Blue color for the title */
+  }
+  
+  .charts-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .chart-section {
+    flex: 1;
+    min-width: 300px;
+    background-color: #f9f9f90f;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box; /* Ensure padding is included in width */
+  }
+  
+  .chart-section h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    color:rgba(50, 6, 6, 0.526);
+  }
+  
+  .chart-containeraf {
+    height: 250px;
+    width: 100%;
+    overflow: auto; /* Add scrollbars if content overflows */
+    box-sizing: border-box; /* Ensure padding and border are included in width/height */
+  }
+  
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  .chart-containeraf::-webkit-scrollbar {
+    width: 8px; /* Thin scrollbar width */
+  }
+  
+  .chart-containeraf::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Light background for the track */
+  }
+  
+  .chart-containeraf::-webkit-scrollbar-thumb {
+    background: #007bff; /* Blue thumb color */
+    border-radius: 4px; /* Rounded corners */
+  }
+  
+  /* Webkit browsers hover effect */
+  .chart-containeraf::-webkit-scrollbar-thumb:hover {
+    background: #0056b3; /* Darker blue on hover */
+  }
+  
+  /* Firefox */
+  .chart-containeraf {
+    scrollbar-width: thin; /* Thin scrollbar */
+    scrollbar-color: #007bff #f1f1f1; /* Thumb color and track color */
+  }
+  
+  /* Edge */
+  .chart-containeraf {
+    -ms-overflow-style: -ms-autohiding-scrollbar; /* Hide scrollbar when not in use */
+  }
+  
+  
+  .loading, .error {
+    text-align: center;
+    font-size: 1.5em;
+    color: #dc3545; /* Red for errors */
+  }
+  
+  .correlation-details {
+    margin-top: 20px;
+  }
+  
+  .correlation-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .correlation-item h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #007bff;
+  }
+  
+  .correlation-item p {
+    font-size: 1em;
+    margin: 5px 0;
+  }
+  
+  .correlation-item ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .correlation-item ul li {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 5px 0;
+    padding: 10px;
+    font-size: 0.9em;
+  }
+
+  /* reportpage.css */
+
+/* General button styling */
+.button {
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: white;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Specific styles for the 'Register this Case' button */
+.button-register {
+  background-color: #00ff91; /* Blue */
+  box-shadow: 0 10px 10px rgba(0, 123, 255, 0.4); /* Blue shadow */
+}
+
+.button-register:hover {
+  background-color: #00b35c; /* Darker blue */
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.6); /* Darker blue shadow */
+}
+
+/* Specific styles for the 'Show Previous Case' button */
+.button-show-previous {
+  background-color: #28a745; /* Green */
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4); /* Green shadow */
+}
+
+.button-show-previous:hover {
+  background-color: #218838; /* Darker green */
+  box-shadow: 0 6px 12px rgba(40, 167, 69, 0.6); /* Darker green shadow */
+}
+
+  
+  @media (max-width: 768px) {
+    .charts-grid {
+      flex-direction: column;
+    }
+  }
+  

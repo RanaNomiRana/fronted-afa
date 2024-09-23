@@ -1,0 +1,58 @@
+.timeline-container {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.date-filters {
+    margin-bottom: 20px;
+}
+
+.date-input {
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.timeline-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.timeline-table th, .timeline-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.timeline-table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.timeline-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.loader {
+    text-align: center;
+    font-size: 18px;
+    color: #333;
+}
+
+.error {
+    color: red;
+    text-align: center;
+    font-size: 18px;
+}

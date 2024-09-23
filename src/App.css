@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+
+* {
+    font-family: 'Roboto', sans-serif;
+  }
+
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrollbars from appearing */
+  }
+  
+  #backgroundVideo {
+    position: fixed; /* Fix the video to the viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the entire background */
+    z-index: -1; /* Ensure the video is behind content */
+  }
+  
+  #root {
+    position: relative;
+    z-index: 1; /* Ensure content is above the video */
+  }
+  
+  .table-container {
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table-head {
+    background-color: #f5f5f5;
+  }
+  
+  .table-head-cell {
+    font-weight: bold;
+    color: #333;
+    font-size: 14px; /* Font size for header cells */
+    padding: 10px;
+    border-right: 1px solid #ddd; /* Vertical line between columns */
+    position: relative;
+  }
+  
+  .table-head-cell:last-child {
+    border-right: none; /* Remove vertical line for the last column */
+  }
+  
+  .table-row {
+    transition: background-color 0.2s ease;
+  }
+  
+  .table-row:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .table-cell {
+    font-size: 12px; /* Font size for data cells */
+    padding: 10px;
+    border-right: 1px solid #ddd; /* Vertical line between columns */
+  }
+  
+  .table-cell:last-child {
+    border-right: none; /* Remove vertical line for the last column */
+  }
+  
+  .table-pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .search-field {
+    margin-bottom: 20px;
+  }
+  

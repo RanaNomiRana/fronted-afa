@@ -1,0 +1,41 @@
+/* src/Analytics.css */
+
+.analytics-container {
+    padding: 20px;
+    width: 55vw;
+    height: 50vh;
+    overflow: auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  .analytics-header {
+    text-align: center;
+    color: #333;
+  }
+  
+  .charts-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; /* Ensure charts wrap on smaller screens */
+  }
+  
+  .pie-chart-container,
+  .bar-chart-container {
+    width: 48%; /* Adjust width to fit side by side */
+    margin-bottom: 20px;
+  }
+  
+  .pie-chart-container h2,
+  .bar-chart-container h2 {
+    text-align: center;
+    color: #555;
+  }
+  
+  /* Ensure charts are responsive */
+  @media (max-width: 768px) {
+    .pie-chart-container,
+    .bar-chart-container {
+      width: 100%;
+    }
+  }
+  

@@ -1,0 +1,131 @@
+/* src/components/CallLogDashboard.css */
+.call-log-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2vw;
+    background-color: #f4f7f9;
+    border-radius: 1vw;
+    box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.1);
+    width: 60vw;
+    height: 60vh;
+    overflow: auto;
+}
+
+.table-and-chart-container {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    height: 100%;
+}
+
+.table-container {
+    flex: 1;
+    margin-right: 2vw;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.8vw;
+    margin-bottom: 1vw;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1vw;
+}
+
+.call-log-table {
+    width: 70%;
+    border-collapse: collapse;
+    min-width: 60vw;
+    background-color: #fff;
+    border-radius: 0.8vw;
+    overflow: hidden;
+    box-shadow: 0 0.2vw 0.5vw rgba(0, 0, 0, 0.1);
+}
+
+.call-log-table th,
+.call-log-table td {
+    padding: 1.5vw;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.call-log-table th {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.call-log-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.call-log-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.pie-chart-container {
+    width: 300px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Print Styles */
+@media print {
+    .call-log-container {
+        width: 100%;
+        height: auto;
+        box-shadow: none;
+        padding: 0;
+        background-color: #fff;
+    }
+
+    .table-and-chart-container {
+        display: block;
+        width: 100%;
+    }
+
+    .table-container {
+        margin: 0;
+        overflow: visible;
+        height: auto;
+    }
+
+    .search-input {
+        display: none;
+    }
+
+    .print-all-button {
+        display: none;
+    }
+
+    .call-log-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .call-log-table th,
+    .call-log-table td {
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .call-log-table th {
+        background-color: #f8f9fa;
+    }
+
+    .call-log-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .call-log-table tr:hover {
+        background-color: transparent;
+    }
+
+    .pie-chart-container {
+        display: none; /* Hide pie chart in print view */
+    }
+}

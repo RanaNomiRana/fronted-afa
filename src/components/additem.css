@@ -1,0 +1,71 @@
+.additem-form-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+  }
+  
+  .additem-heading {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .additem-form-group {
+    margin-bottom: 15px;
+  }
+  
+  .additem-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .additem-form-group input[type="text"],
+  .additem-form-group input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .additem-form-group input[type="file"] {
+    padding: 3px;
+  }
+  
+  .additem-submit-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #28a745;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .additem-submit-button:hover {
+    background-color: #218838;
+  }
+  
+  .additem-message {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .additem-message.error {
+    color: #d9534f; /* Red color for errors */
+  }
+  
+  .additem-message.success {
+    color: #5bc0de; /* Blue color for success */
+  }
+  

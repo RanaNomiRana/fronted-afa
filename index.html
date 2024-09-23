@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vite + React + TS</title>
+  <link rel="stylesheet" href="./public/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./styles.css"> <!-- Link to your custom CSS -->
+</head>
+<body>
+ 
+
+  <!-- Main Content -->
+  <div id="root"></div>
+  
+  <script type="module" src="/src/main.tsx"></script>
+  <script>
+    if (window.ipcRenderer) {
+      console.log('ipcRenderer is available in the renderer process');
+    } else {
+      console.error('ipcRenderer is NOT available in the renderer process');
+    }
+  </script>
+  <script type="module" src="./public/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
+</body>
+</html>
