@@ -3,12 +3,14 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import './reportpage.css';
 import { Button } from '@mui/material';
-import { Add, Visibility, ShowChart , Edit} from '@mui/icons-material';
+import { Add, Visibility, ShowChart, Edit } from '@mui/icons-material';
 import PieChartComponent from './PieChartComponent';
 import DataCorrelationVisualization from './DataCorrelationVisualization';
 import CallLogChart from './CallLogChart';
-
-import { ReportData, SMSStats, CallStats, TimelineAnalysisItem, SMSWithUrl, DataCorrelationResult } from './types'; // Adjust import path as needed
+import Popup from './Popup';
+import PreviousDataPopup from './PreviousDataPopup';
+import PreviousCasePopup from './PreviousCasePopup';
+import { ReportData } from './types'; // Adjust import path as needed
 
 // Register Chart.js components
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
@@ -16,7 +18,8 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement);
 const ReportPage: React.FC = () => {
   const [reportData, setReportData] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
+  const [popupOpen, setPopupOpen] = useState<boolean>(false);
+  const [previousCasePopupOpen, setPreviousCasePopupOpen] = useState<boolean>(false); // State for PreviousCasePopup
 
   useEffect(() => {
     const fetchReportData = async () => {
@@ -29,7 +32,7 @@ const ReportPage: React.FC = () => {
         setReportData(data);
       } catch (error) {
         console.error('Error fetching report data:', error);
-        setReportData(null); // Set data to null if there's an error
+        setReportData(null);
       } finally {
         setLoading(false);
       }
@@ -45,24 +48,21 @@ const ReportPage: React.FC = () => {
   if (!reportData) {
     return (
       <>
-      <div className="error">
-        No device Connected. <br />
-        <Button variant="contained"  startIcon={<Visibility />}>
-          Show Previous Case
-        </Button>
-        {/* i will add the PreviousCasePopup */}
-      </div>
+        <div className="error">
+          No device Connected. <br />
+          <Button variant="contained" startIcon={<Visibility />} onClick={() => setPreviousCasePopupOpen(true)}>
+            Show Previous Case
+          </Button>
+          <PreviousCasePopup open={previousCasePopupOpen} onClose={() => setPreviousCasePopupOpen(false)} />
+        </div>
 
-<div style={{ padding: 9 }}>
-<Button
-  variant="contained"
-  startIcon={<ShowChart />}
->
-  Show Previous Data
-</Button>
-{/* i wil add the PreviousDataPopup */}
-</div>
-</>
+        <div style={{ padding: 9 }}>
+          <Button variant="contained" startIcon={<ShowChart />}>
+            Show Previous Data
+          </Button>
+          {/* Add PreviousDataPopup component here */}
+        </div>
+      </>
     );
   }
 
@@ -80,7 +80,7 @@ const ReportPage: React.FC = () => {
           smsStats.criminal,
           smsStats.cyberbullying,
           smsStats.threat,
-          smsStats.negative_sentiment
+          smsStats.negative_sentiment,
         ],
         backgroundColor: [
           '#007bff', // Blue
@@ -89,12 +89,12 @@ const ReportPage: React.FC = () => {
           '#ffc107', // Yellow
           '#6f42c1', // Purple
           '#20c997', // Teal
-          '#fd7e14'  // Orange
+          '#fd7e14', // Orange
         ],
       },
     ],
   } : {};
-  
+
   const callChartData = callStats ? {
     labels: ['Total Calls', 'Incoming Calls', 'Outgoing Calls', 'Missed Calls'],
     datasets: [
@@ -103,13 +103,13 @@ const ReportPage: React.FC = () => {
           callStats.totalCalls,
           callStats.incomingCalls,
           callStats.outgoingCalls,
-          callStats.missedCalls
+          callStats.missedCalls,
         ],
         backgroundColor: [
           '#007bff', // Blue
           '#dc3545', // Red
           '#28a745', // Green
-          '#ffc107'  // Yellow
+          '#ffc107', // Yellow
         ],
       },
     ],
@@ -140,11 +140,12 @@ const ReportPage: React.FC = () => {
       number: result.number,
       date: call.date,
       duration: call.duration,
-      type: call.type
+      type: call.type,
     }))
   );
 
   const callLogsChartData = callLogsData.length > 0 ? {
+    labels: callLogsData.map(call => `${call.number} - ${call.date}`),
     datasets: [
       {
         data: callLogsData.map(call => parseInt(call.duration.split('m')[0]) || 0), // Extract minutes from duration
@@ -158,7 +159,7 @@ const ReportPage: React.FC = () => {
       legend: {
         labels: {
           color: 'black',
-        }, 
+        },
       },
       tooltip: {
         bodyColor: 'white',
@@ -174,43 +175,43 @@ const ReportPage: React.FC = () => {
           <Button
             variant="contained"
             startIcon={<Add />}
+            onClick={() => setPopupOpen(true)}
           >
             Register this Case
           </Button>
-
-          {/* i will add the popup component */}
+          <Popup open={popupOpen} onClose={() => setPopupOpen(false)} />
         </div>
 
         <div style={{ padding: 9 }}>
           <Button
             variant="contained"
-             startIcon={<Visibility />}
+            startIcon={<Visibility />}
+            onClick={() => setPreviousCasePopupOpen(true)}
           >
             Show Previous Case
           </Button>
-          {/* i will add the previous case popup */}
+          <PreviousCasePopup open={previousCasePopupOpen} onClose={() => setPreviousCasePopupOpen(false)} />
         </div>
 
         <div style={{ padding: 9 }}>
           <Button
             variant="contained"
-             startIcon={<ShowChart />}
+            startIcon={<ShowChart />}
           >
             Show Previous Data
           </Button>
-          {/* i will add the PreviousDataPopup component */}
+          {/* Add PreviousDataPopup component here */}
         </div>
 
         <div style={{ padding: 9 }}>
-  <Button
-    variant="contained"
-    startIcon={<Edit />} // Add the Edit icon here
-  >
-    Add Remark
-  </Button>
-  {/* i will add the add remark component */}
-</div>
-
+          <Button
+            variant="contained"
+            startIcon={<Edit />}
+          >
+            Add Remark
+          </Button>
+          {/* Add remark component here */}
+        </div>
       </div>
 
       <div className="charts-grid">

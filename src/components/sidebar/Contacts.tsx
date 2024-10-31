@@ -48,6 +48,14 @@ const Contacts: React.FC = () => {
     setSearchTerm(event.target.value);
   };
 
+  const highlightText = (text: string | undefined) => {
+    if (!text || !searchTerm) return text; // Check if text is undefined
+    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    return text.split(regex).map((part, index) => 
+      regex.test(part) ? <span key={index} className="highlight">{part}</span> : part
+    );
+  };
+
   const handlePrint = () => {
     const printWindow = window.open('', '', 'height=800,width=1200');
     if (printWindow) {
@@ -136,13 +144,15 @@ const Contacts: React.FC = () => {
         <ul className="contacts-list">
           {filteredContacts.map((contact, index) => (
             <li key={index} className="contact-item">
-              <span className="contact-name">{contact.display_name || 'Unknown'}</span> - <span className="contact-phone">{contact.number || 'No phone number'}</span>
+              <span className="contact-name">{highlightText(contact.display_name) || 'Unknown'}</span> - 
+              <span className="contact-phone">{highlightText(contact.number) || 'No phone number'}</span>
             </li>
           ))}
         </ul>
-        <div className="chart-container">
-          <Pie data={chartData} />
-        </div>
+      </div>
+      {/* Optionally render the pie chart */}
+      <div className="chart-container">
+        <Pie data={chartData} />
       </div>
     </div>
   );

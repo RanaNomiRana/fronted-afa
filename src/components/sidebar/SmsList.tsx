@@ -26,7 +26,6 @@ const SMSList: React.FC = () => {
   const [filteredMessages, setFilteredMessages] = useState<SMS[]>([]);
 
   useEffect(() => {
-    // Fetch SMS messages from the API
     const fetchSMS = async () => {
       try {
         const response = await fetch('http://localhost:3000/sms');
@@ -35,7 +34,7 @@ const SMSList: React.FC = () => {
         }
         const data: SMS[] = await response.json();
         setSmsMessages(data);
-        setFilteredMessages(data); // Set the filtered messages to the fetched data initially
+        setFilteredMessages(data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching SMS data:', error);
@@ -47,7 +46,6 @@ const SMSList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Filter messages based on search keyword
     const filtered = smsMessages.filter(sms =>
       (sms.address?.toLowerCase() || '').includes(searchKeyword.toLowerCase()) ||
       (sms.body?.toLowerCase() || '').includes(searchKeyword.toLowerCase())
@@ -55,7 +53,6 @@ const SMSList: React.FC = () => {
     setFilteredMessages(filtered);
   }, [searchKeyword, smsMessages]);
 
-  // Prepare data for the pie chart
   const categoriesCount = filteredMessages.reduce((acc, sms) => {
     acc[sms.category] = (acc[sms.category] || 0) + 1;
     return acc;
@@ -76,6 +73,15 @@ const SMSList: React.FC = () => {
       borderColor: '#fff',
       borderWidth: 1,
     }],
+  };
+
+  // Function to highlight the search keyword in text
+  const highlightText = (text: string | undefined) => {
+    if (!text || !searchKeyword) return text; // Check if text is undefined
+    const regex = new RegExp(`(${searchKeyword})`, 'gi');
+    return text.split(regex).map((part, index) => 
+      regex.test(part) ? <span key={index} className="highlight">{part}</span> : part
+    );
   };
 
   return (
@@ -100,12 +106,14 @@ const SMSList: React.FC = () => {
                   className={`sms-item ${sms.type} ${sms.category}`}
                 >
                   <div className="sms-header">
-                    <span className="sms-address">{sms.address || 'Unknown'}</span>
+                    <span className="sms-address">
+                      {highlightText(sms.address || 'Unknown')}
+                    </span>
                     <span className="sms-date">{sms.date}</span>
                   </div>
                   <div className="sms-body">
-                    {sms.body}
-                    <span className="sms-emoji">{sms.sentimentEmoji}</span> {/* Display sentiment emoji */}
+                    {highlightText(sms.body)} {/* Highlighted body text */}
+                    <span className="sms-emoji">{sms.sentimentEmoji}</span>
                   </div>
                   <div className="sms-category">
                     <strong>Category:</strong> {sms.category}
@@ -117,9 +125,6 @@ const SMSList: React.FC = () => {
             )}
           </>
         )}
-      </div>
-      <div className="pie-chart-container">
-        <Pie data={chartData} />
       </div>
     </div>
   );

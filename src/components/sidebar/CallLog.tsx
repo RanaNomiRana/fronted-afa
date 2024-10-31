@@ -46,6 +46,14 @@ const CallLog: React.FC = () => {
         setSearchTerm(e.target.value);
     };
 
+    const highlightText = (text: string | undefined) => {
+        if (!text || !searchTerm) return text; // Check if text is undefined
+        const regex = new RegExp(`(${searchTerm})`, 'gi');
+        return text.split(regex).map((part, index) => 
+            regex.test(part) ? <span key={index} className="highlight">{part}</span> : part
+        );
+    };
+
     const handlePrint = () => {
         const printWindow = window.open('', '', 'height=600,width=800');
         if (!printWindow) return;
@@ -134,7 +142,7 @@ const CallLog: React.FC = () => {
                         filteredCallLog.map((entry) => (
                             <tr key={entry.id}>
                                 <td>{entry.id}</td>
-                                <td>{entry.number}</td>
+                                <td>{highlightText(entry.number)}</td> {/* Highlighted number text */}
                                 <td>{entry.date}</td>
                                 <td>{entry.duration}</td>
                                 <td>{entry.type}</td>

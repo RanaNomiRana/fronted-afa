@@ -85,6 +85,10 @@ const SearchContainer = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
+const Highlight = styled('span')({
+  backgroundColor: 'yellow', // Highlight color
+});
+
 const DataCorrelation: React.FC = () => {
   const [data, setData] = useState<DataCorrelation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -115,7 +119,7 @@ const DataCorrelation: React.FC = () => {
   const handlePrint = () => {
     const printWindow = window.open('', '', 'height=600,width=800');
     if (!printWindow) return;
-  
+
     printWindow.document.open();
     printWindow.document.write(`
       <html>
@@ -189,7 +193,7 @@ const DataCorrelation: React.FC = () => {
     printWindow.focus();
     printWindow.print();
   };
-  
+
   if (loading) return <Spinner><CircularProgress /></Spinner>;
   if (error) return <NoData color="error">{error}</NoData>;
 
@@ -213,6 +217,14 @@ const DataCorrelation: React.FC = () => {
 
   // Calculate paginated data
   const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
+  const highlightNumber = (number: string) => {
+    if (!searchKeyword) return number; // No highlighting if no search keyword
+    const regex = new RegExp(`(${searchKeyword})`, 'gi');
+    return number.split(regex).map((part, index) =>
+      regex.test(part) ? <Highlight key={index}>{part}</Highlight> : part
+    );
+  };
 
   return (
     <Container>
@@ -243,7 +255,7 @@ const DataCorrelation: React.FC = () => {
               <TableBody>
                 {paginatedData.map((entry, index) => (
                   <TableRow key={index}>
-                    <TableCell>{entry.number}</TableCell>
+                    <TableCell>{highlightNumber(entry.number)}</TableCell>
                     <TableCell>{entry.smsCount}</TableCell>
                     <TableCell>
                       <LogsContainer>
