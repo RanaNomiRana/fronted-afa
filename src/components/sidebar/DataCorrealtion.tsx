@@ -89,7 +89,7 @@ const Highlight = styled('span')({
   backgroundColor: 'yellow', // Highlight color
 });
 
-const DataCorrelation: React.FC = () => {
+const DataCorrelationPage: React.FC = () => {
   const [data, setData] = useState<DataCorrelation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -159,7 +159,7 @@ const DataCorrelation: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              ${filteredData.length > 0 ? filteredData.map(entry => `
+              ${data.length > 0 ? data.map(entry => `
                 <tr>
                   <td>${entry.number}</td>
                   <td>${entry.smsCount}</td>
@@ -177,7 +177,7 @@ const DataCorrelation: React.FC = () => {
                         <div><strong>Number:</strong> ${log.number}</div>
                         <div><strong>Type:</strong> ${log.type}</div>
                         <div><strong>Date:</strong> ${new Date(log.date).toLocaleString()}</div>
-                        ${log.duration !== undefined ? `<div><strong>Duration:</strong> ${log.duration} seconds</div>` : ''}
+                        ${log.duration !== undefined ? `<div><strong>Duration:</strong> ${log.duration} seconds</div>` : ''} 
                       </div>
                     `).join('') : '<div>No call logs available.</div>'}
                   </td>
@@ -209,19 +209,23 @@ const DataCorrelation: React.FC = () => {
   };
 
   // Filter data based on search keyword
-  const filteredData = data.filter(entry =>
-    entry.number.includes(searchKeyword) ||
-    entry.messages?.some(message => message.body.includes(searchKeyword)) ||
-    entry.callLogs?.some(log => log.number.includes(searchKeyword))
-  );
+  const filteredData = data.filter(entry => {
+    const search = searchKeyword.toLowerCase();
+    // Check if the number or message body or call log number matches the search keyword
+    return (
+      entry.number.toLowerCase().includes(search) ||
+      (entry.messages && entry.messages.some(message => message.body.toLowerCase().includes(search))) ||
+      (entry.callLogs && entry.callLogs.some(log => log.number.toLowerCase().includes(search)))
+    );
+  });
 
   // Calculate paginated data
   const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  const highlightNumber = (number: string) => {
-    if (!searchKeyword) return number; // No highlighting if no search keyword
+  const highlightText = (text: string) => {
+    if (!searchKeyword) return text; // No highlighting if no search keyword
     const regex = new RegExp(`(${searchKeyword})`, 'gi');
-    return number.split(regex).map((part, index) =>
+    return text.split(regex).map((part, index) =>
       regex.test(part) ? <Highlight key={index}>{part}</Highlight> : part
     );
   };
@@ -255,7 +259,7 @@ const DataCorrelation: React.FC = () => {
               <TableBody>
                 {paginatedData.map((entry, index) => (
                   <TableRow key={index}>
-                    <TableCell>{highlightNumber(entry.number)}</TableCell>
+                    <TableCell>{highlightText(entry.number)}</TableCell>
                     <TableCell>{entry.smsCount}</TableCell>
                     <TableCell>
                       <LogsContainer>
@@ -263,7 +267,7 @@ const DataCorrelation: React.FC = () => {
                           entry.messages.map((message, i) => (
                             <LogItem key={i}>
                               <LogHeader variant="body2">Body:</LogHeader>
-                              <Typography variant="body2">{message.body}</Typography>
+                              <Typography variant="body2">{highlightText(message.body)}</Typography>
                               <LogHeader variant="body2">Date:</LogHeader>
                               <Typography variant="body2">{new Date(message.date).toLocaleString()}</Typography>
                             </LogItem>
@@ -279,7 +283,7 @@ const DataCorrelation: React.FC = () => {
                           entry.callLogs.map((log, i) => (
                             <LogItem key={i}>
                               <LogHeader variant="body2">Number:</LogHeader>
-                              <Typography variant="body2">{log.number}</Typography>
+                              <Typography variant="body2">{highlightText(log.number)}</Typography>
                               <LogHeader variant="body2">Type:</LogHeader>
                               <Typography variant="body2">{log.type}</Typography>
                               <LogHeader variant="body2">Date:</LogHeader>
@@ -317,4 +321,4 @@ const DataCorrelation: React.FC = () => {
   );
 };
 
-export default DataCorrelation;
+export default DataCorrelationPage;

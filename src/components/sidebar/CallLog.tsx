@@ -16,6 +16,7 @@ const CallLog: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const [selectedType, setSelectedType] = useState<string>(''); // Filter type state
 
     useEffect(() => {
         const fetchCallLog = async () => {
@@ -34,16 +35,21 @@ const CallLog: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        const filtered = callLog.filter(entry => 
-            entry.number.includes(searchTerm) || 
-            entry.date.includes(searchTerm) || 
-            entry.type.includes(searchTerm)
+        const filtered = callLog.filter(entry =>
+            (entry.number.includes(searchTerm) || 
+             entry.date.includes(searchTerm) || 
+             entry.type.includes(searchTerm)) &&
+            (selectedType === '' || entry.type === selectedType) // Filter by type
         );
         setFilteredCallLog(filtered);
-    }, [searchTerm, callLog]);
+    }, [searchTerm, selectedType, callLog]);
 
     const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
+    };
+
+    const handleTypeFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        setSelectedType(e.target.value);
     };
 
     const highlightText = (text: string | undefined) => {
@@ -119,6 +125,7 @@ const CallLog: React.FC = () => {
 
     return (
         <div className="call-log-container">
+            {/* Search Input */}
             <input
                 type="text"
                 placeholder="Search..."
@@ -126,7 +133,19 @@ const CallLog: React.FC = () => {
                 onChange={handleSearchChange}
                 className="search-input"
             />
-            <button onClick={handlePrint} className="print-button">Print</button>
+
+            {/* Type Filter Dropdown */}
+            <select value={selectedType} onChange={handleTypeFilterChange} className="type-filter">
+                <option value="">All Types</option>
+                <option value="incoming">Incoming</option>
+                <option value="outgoing">Outgoing</option>
+                <option value="missed">Missed</option>
+            </select>
+
+            {/* Print Button */}
+            <button onClick={handlePrint} className="print-button m-4">Print</button>
+
+            {/* Call Log Table */}
             <table className="call-log-table">
                 <thead>
                     <tr>

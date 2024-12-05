@@ -3,14 +3,20 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import './reportpage.css';
 import { Button } from '@mui/material';
-import { Add, Visibility, ShowChart, Edit } from '@mui/icons-material';
+import { Add, Visibility, ShowChart, Edit,Smartphone } from '@mui/icons-material';
 import PieChartComponent from './PieChartComponent';
 import DataCorrelationVisualization from './DataCorrelationVisualization';
 import CallLogChart from './CallLogChart';
 import Popup from './Popup';
-import PreviousDataPopup from './PreviousDataPopup';
 import PreviousCasePopup from './PreviousCasePopup';
 import { ReportData } from './types'; // Adjust import path as needed
+import ExtractDataButton from './ExtractDatabutton';
+
+import PreviousDataPopup from './PreviousDataPopup';
+import { FaSleigh } from 'react-icons/fa';
+import ReportSearch from './ReportSearch';
+import DirectoryFiles from './Directory';
+import PullData from './PullData';
 
 // Register Chart.js components
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
@@ -20,6 +26,8 @@ const ReportPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [popupOpen, setPopupOpen] = useState<boolean>(false);
   const [previousCasePopupOpen, setPreviousCasePopupOpen] = useState<boolean>(false); // State for PreviousCasePopup
+  const [PreviousDataPopupOpen, setPreviousDataPopupOpen] = useState<boolean>(false); // State for PreviousCasePopup
+
 
   useEffect(() => {
     const fetchReportData = async () => {
@@ -177,7 +185,7 @@ const ReportPage: React.FC = () => {
             startIcon={<Add />}
             onClick={() => setPopupOpen(true)}
           >
-            Register this Case
+            Register Case
           </Button>
           <Popup open={popupOpen} onClose={() => setPopupOpen(false)} />
         </div>
@@ -188,7 +196,7 @@ const ReportPage: React.FC = () => {
             startIcon={<Visibility />}
             onClick={() => setPreviousCasePopupOpen(true)}
           >
-            Show Previous Case
+            Previous Case
           </Button>
           <PreviousCasePopup open={previousCasePopupOpen} onClose={() => setPreviousCasePopupOpen(false)} />
         </div>
@@ -197,21 +205,28 @@ const ReportPage: React.FC = () => {
           <Button
             variant="contained"
             startIcon={<ShowChart />}
+            onClick={() => setPreviousDataPopupOpen(true)}
+
           >
-            Show Previous Data
+            Previous Data
           </Button>
+
+          <PreviousDataPopup open={PreviousDataPopupOpen} onClose={() => setPreviousDataPopupOpen(false)} />
           {/* Add PreviousDataPopup component here */}
         </div>
 
-        <div style={{ padding: 9 }}>
-          <Button
-            variant="contained"
-            startIcon={<Edit />}
-          >
-            Add Remark
-          </Button>
-          {/* Add remark component here */}
-        </div>
+       
+
+     
+
+      <ExtractDataButton/>
+
+
+      <ReportSearch/>
+      <DirectoryFiles/>
+
+      <PullData/>
+      {/* Add remark component here */}
       </div>
 
       <div className="charts-grid">

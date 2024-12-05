@@ -1,17 +1,23 @@
-// TimelineAndPieChartComponent.tsx
-
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
+
+interface CallDetail {
+    number: string;
+    type: string;
+    duration: string;
+}
 
 interface TimelineData {
     date: string;
     totalMessages: number;
     suspiciousMessages: number;
+    smsDetails: any[];
     totalCalls: number;
     incomingCalls: number;
     outgoingCalls: number;
     missedCalls: number;
+    callDetails: CallDetail[];
 }
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6699', '#FFCC99'];
@@ -25,7 +31,7 @@ const TimelineAndPieChartComponent: React.FC = () => {
         const fetchTimelineData = async () => {
             try {
                 const response = await axios.get('http://localhost:3000/timeline-analysis');
-                const fetchedData: TimelineData[] = response.data;
+                const fetchedData: TimelineData[] = response.data.timeline;
                 setData(fetchedData);
 
                 // Aggregate data for the pie chart
@@ -65,10 +71,30 @@ const TimelineAndPieChartComponent: React.FC = () => {
 
     return (
         <div style={{ padding: '20px' }}>
-
-           
+            <div>
+                {/* Pie Chart Section */}
+                <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                        <Pie
+                            data={pieData}
+                            dataKey="value"
+                            nameKey="name"
+                            outerRadius={100}
+                            fill="#8884d8"
+                            label
+                        >
+                            {pieData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                    </PieChart>
+                </ResponsiveContainer>
+            </div>
 
             <div>
+                {/* Line Chart Section */}
                 <ResponsiveContainer width="100%" height={250}>
                     <LineChart data={lineData}>
                         <CartesianGrid strokeDasharray="3 3" />

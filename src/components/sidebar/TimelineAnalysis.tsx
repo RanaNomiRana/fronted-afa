@@ -1,16 +1,33 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import axios from 'axios';
-import TimelineAndPieChartComponent  from './PieChartComponent'; // Import the PieChart component
+import TimelineAndPieChartComponent from './PieChartComponent'; // Import the PieChart component
 import './TimelineAnalysis.css'; // Import your CSS file
+
+interface SmsDetail {
+    address: string;
+    body: string;
+    contactName: string | null;
+    category: string;
+    isSuspicious: boolean;
+    sentimentEmoji: string;
+}
+
+interface CallDetail {
+    number: string;
+    type: string;
+    duration: string;
+}
 
 interface TimelineEntry {
     date: string;
     totalMessages: number;
     suspiciousMessages: number;
+    smsDetails: SmsDetail[]; // Added SMS details
     totalCalls: number;
     incomingCalls: number;
     outgoingCalls: number;
     missedCalls: number;
+    callDetails: CallDetail[]; // Added Call details
 }
 
 const TimelineAnalysis: React.FC = () => {
@@ -25,8 +42,8 @@ const TimelineAnalysis: React.FC = () => {
         const fetchTimelineData = async () => {
             try {
                 const response = await axios.get('http://localhost:3000/timeline-analysis');
-                setTimelineData(response.data);
-                setFilteredTimelineData(response.data);
+                setTimelineData(response.data.timeline);  // Update this to access the timeline field from response
+                setFilteredTimelineData(response.data.timeline); // Update this to access the timeline field from response
                 setLoading(false);
             } catch (err) {
                 setError('Failed to fetch timeline data.');
@@ -163,6 +180,8 @@ const TimelineAnalysis: React.FC = () => {
                             <th>Incoming Calls</th>
                             <th>Outgoing Calls</th>
                             <th>Missed Calls</th>
+                            <th>SMS Details</th>
+                            <th>Call Details</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -176,17 +195,43 @@ const TimelineAnalysis: React.FC = () => {
                                     <td>{entry.incomingCalls}</td>
                                     <td>{entry.outgoingCalls}</td>
                                     <td>{entry.missedCalls}</td>
+                                    <td>
+                                        {entry.smsDetails.length > 0 ? (
+                                            <ul>
+                                                {entry.smsDetails.map((sms, index) => (
+                                                    <li key={index}>
+                                                        {sms.body} - {sms.address}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            'No SMS Data'
+                                        )}
+                                    </td>
+                                    <td>
+                                        {entry.callDetails.length > 0 ? (
+                                            <ul>
+                                                {entry.callDetails.map((call, index) => (
+                                                    <li key={index}>
+                                                        {call.type} call to {call.number} - {call.duration}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            'No Call Data'
+                                        )}
+                                    </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={7}>No data available</td>
+                                <td colSpan={9}>No data available</td>
                             </tr>
                         )}
                     </tbody>
                 </table>
-                <div className="">
-                    <TimelineAndPieChartComponent/>
+                <div className="chart-section">
+                    <TimelineAndPieChartComponent data={pieChartData} />
                 </div>
             </div>
         </div>

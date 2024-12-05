@@ -1,13 +1,11 @@
-// src/components/SMSList.tsx
 import React, { useEffect, useState } from 'react';
 import './SmsList.css'; // Import CSS file for styling
+import axios from 'axios';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 
-// Register the components needed for Chart.js
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
-// Updated SMS interface to include sentiment emoji
 interface SMS {
   address: string;
   date: string;
@@ -16,7 +14,7 @@ interface SMS {
   isSuspicious: boolean;
   contactName: string | null;
   category: 'normal' | 'fraud' | 'criminal' | 'cyberbullying' | 'threat' | 'negative_sentiment';
-  sentimentEmoji: string; // New field for sentiment emoji
+  sentimentEmoji: string;
 }
 
 const SMSList: React.FC = () => {
@@ -25,19 +23,21 @@ const SMSList: React.FC = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [filteredMessages, setFilteredMessages] = useState<SMS[]>([]);
 
+  const [selectedType, setSelectedType] = useState<'all' | 'received' | 'sent'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
   useEffect(() => {
     const fetchSMS = async () => {
       try {
-        const response = await fetch('http://localhost:3000/sms');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data: SMS[] = await response.json();
-        setSmsMessages(data);
-        setFilteredMessages(data);
-        setLoading(false);
+        const response = await axios.get('http://localhost:3000/sms');
+        const data: SMS[] = response.data;
+
+        const validSmsData = data.filter(sms => sms.address && sms.body);
+        setSmsMessages(validSmsData);
+        setFilteredMessages(validSmsData);
       } catch (error) {
         console.error('Error fetching SMS data:', error);
+      } finally {
         setLoading(false);
       }
     };
@@ -46,12 +46,20 @@ const SMSList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const filtered = smsMessages.filter(sms =>
-      (sms.address?.toLowerCase() || '').includes(searchKeyword.toLowerCase()) ||
-      (sms.body?.toLowerCase() || '').includes(searchKeyword.toLowerCase())
-    );
+    const filtered = smsMessages.filter(sms => {
+      const matchesKeyword =
+        (sms.address?.toLowerCase() || '').includes(searchKeyword.toLowerCase()) ||
+        (sms.body?.toLowerCase() || '').includes(searchKeyword.toLowerCase());
+
+      const matchesType = selectedType === 'all' || sms.type === selectedType;
+
+      const matchesCategory = selectedCategory === 'all' || sms.category === selectedCategory;
+
+      return matchesKeyword && matchesType && matchesCategory;
+    });
+
     setFilteredMessages(filtered);
-  }, [searchKeyword, smsMessages]);
+  }, [searchKeyword, selectedType, selectedCategory, smsMessages]);
 
   const categoriesCount = filteredMessages.reduce((acc, sms) => {
     acc[sms.category] = (acc[sms.category] || 0) + 1;
@@ -60,26 +68,20 @@ const SMSList: React.FC = () => {
 
   const chartData = {
     labels: Object.keys(categoriesCount),
-    datasets: [{
-      data: Object.values(categoriesCount),
-      backgroundColor: [
-        '#FF6384',
-        '#36A2EB',
-        '#FFCE56',
-        '#4BC0C0',
-        '#9966FF',
-        '#FF9F40',
-      ],
-      borderColor: '#fff',
-      borderWidth: 1,
-    }],
+    datasets: [
+      {
+        data: Object.values(categoriesCount),
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+        borderColor: '#fff',
+        borderWidth: 1,
+      },
+    ],
   };
 
-  // Function to highlight the search keyword in text
   const highlightText = (text: string | undefined) => {
-    if (!text || !searchKeyword) return text; // Check if text is undefined
+    if (!text || !searchKeyword) return text;
     const regex = new RegExp(`(${searchKeyword})`, 'gi');
-    return text.split(regex).map((part, index) => 
+    return text.split(regex).map((part, index) =>
       regex.test(part) ? <span key={index} className="highlight">{part}</span> : part
     );
   };
@@ -99,12 +101,34 @@ const SMSList: React.FC = () => {
                 onChange={(e) => setSearchKeyword(e.target.value)}
               />
             </div>
+
+            <div className="filters">
+              <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value as 'all' | 'received' | 'sent')}
+              >
+                <option value="all">All Types</option>
+                <option value="received">Received</option>
+                <option value="sent">Sent</option>
+              </select>
+
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="all">All Categories</option>
+                <option value="normal">Normal</option>
+                <option value="fraud">Fraud</option>
+                <option value="criminal">Criminal</option>
+                <option value="cyberbullying">Cyberbullying</option>
+                <option value="threat">Threat</option>
+                <option value="negative_sentiment">Negative Sentiment</option>
+              </select>
+            </div>
+
             {filteredMessages.length > 0 ? (
               filteredMessages.map((sms, index) => (
-                <div
-                  key={index}
-                  className={`sms-item ${sms.type} ${sms.category}`}
-                >
+                <div key={index} className={`sms-item ${sms.type} ${sms.category}`}>
                   <div className="sms-header">
                     <span className="sms-address">
                       {highlightText(sms.address || 'Unknown')}
@@ -112,7 +136,7 @@ const SMSList: React.FC = () => {
                     <span className="sms-date">{sms.date}</span>
                   </div>
                   <div className="sms-body">
-                    {highlightText(sms.body)} {/* Highlighted body text */}
+                    {highlightText(sms.body || 'No message content')}
                     <span className="sms-emoji">{sms.sentimentEmoji}</span>
                   </div>
                   <div className="sms-category">
@@ -126,6 +150,13 @@ const SMSList: React.FC = () => {
           </>
         )}
       </div>
+
+      {filteredMessages.length > 0 && (
+        <div className="chart-container">
+          <h2>SMS Category Distribution</h2>
+          <Pie data={chartData} />
+        </div>
+      )}
     </div>
   );
 };
